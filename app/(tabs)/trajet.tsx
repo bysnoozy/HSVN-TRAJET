@@ -1,25 +1,33 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import type { TrajetLeg } from "../../src/api/types";
 import EmptyState from "../../src/components/EmptyState";
 import TrajetStepRow from "../../src/components/TrajetStepRow";
 import { colors } from "../../src/constants/theme";
 import { useApiKeys } from "../../src/hooks/useApiKeys";
+import { useNotifications } from "../../src/hooks/useNotifications";
 import { useTrajet } from "../../src/hooks/useTrajet";
 
 export default function TrajetScreen() {
   const router = useRouter();
   const { keys } = useApiKeys();
   const { trajet, loaded, removeStep, moveStep, reload } = useTrajet();
+  const { syncTrajet } = useNotifications();
 
   useFocusEffect(
     useCallback(() => {
       reload();
     }, [reload])
   );
+
+  // Tient le serveur de notifications à jour dès que le trajet change (sans
+  // effet si les notifications ne sont pas activées, cf. useNotifications).
+  useEffect(() => {
+    if (loaded) syncTrajet(trajet);
+  }, [loaded, trajet, syncTrajet]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>

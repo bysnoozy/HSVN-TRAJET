@@ -6,6 +6,7 @@ import type { Provider, TransportMode } from "../../../src/api/types";
 import DepartureRow from "../../../src/components/DepartureRow";
 import DirectionFilter from "../../../src/components/DirectionFilter";
 import EmptyState from "../../../src/components/EmptyState";
+import LineNewsEmbed from "../../../src/components/LineNewsEmbed";
 import { colors } from "../../../src/constants/theme";
 import { useApiKeys } from "../../../src/hooks/useApiKeys";
 import { useDepartures } from "../../../src/hooks/useDepartures";
@@ -51,6 +52,11 @@ export default function DepartureBoardScreen() {
     () => (selectedDirection ? departures.filter((d) => d.destination === selectedDirection) : departures),
     [departures, selectedDirection]
   );
+
+  // Après filtrage par sens, les passages visibles partagent en général la
+  // même ligne : sert de base à "Actualités de la ligne".
+  const currentLine = visibleDepartures[0]?.line;
+  const currentLineMode = visibleDepartures[0]?.mode;
 
   useEffect(() => {
     setSelectedDirection(null);
@@ -112,6 +118,8 @@ export default function DepartureBoardScreen() {
           {addedFeedback ? <Text style={styles.addedFeedback}>{addedFeedback}</Text> : null}
         </View>
       ) : null}
+
+      {currentLine ? <LineNewsEmbed line={currentLine} mode={currentLineMode} /> : null}
 
       {loading && departures.length === 0 ? (
         <ActivityIndicator style={styles.loader} color={colors.accent} />
