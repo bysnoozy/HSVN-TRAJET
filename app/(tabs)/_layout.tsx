@@ -18,6 +18,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="trajet"
+        options={{
+          title: "Mon trajet",
+          tabBarIcon: ({ color, size }) => <Ionicons name="git-branch" size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="favorites"
         options={{
           title: "Favoris",

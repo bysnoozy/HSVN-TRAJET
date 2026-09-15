@@ -37,3 +37,24 @@ export interface ApiKeys {
   sncf?: string;
   idfm?: string;
 }
+
+/**
+ * Une étape d'un trajet personnel : un arrêt précis, dans un sens précis
+ * (ex: "Esbly, vers Chelles"). Le sens correspond à la destination affichée
+ * par l'API pour cet arrêt (cf. écran Prochains passages / DirectionFilter).
+ */
+export interface TrajetStep {
+  id: string;
+  provider: Provider;
+  stationId: string;
+  stationName: string;
+  direction: string;
+  mode: TransportMode;
+}
+
+export type TrajetLeg = "aller" | "retour";
+
+export interface Trajet {
+  aller: TrajetStep[];
+  retour: TrajetStep[];
+}
